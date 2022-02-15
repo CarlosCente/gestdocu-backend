@@ -1,6 +1,7 @@
 package com.gestdocu.models.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -74,8 +75,24 @@ public class JpaUserDetailsService implements UserDetailsService {
 		Usuario usuario = new Usuario();
 		BeanUtils.copyProperties(user, usuario);
 		encodePassword(usuario, user);
+		
+		//La fecha de ultima modificacion coincidira con la de creación en el registro
+		Date fechaActual = new Date();
+		usuario.setUltimaModificacion(fechaActual);
 		usuarioDao.save(usuario);
 	}
+	
+	/*public void deshabilitarUsuario(Usuario user) {
+		if (checkIfUserExist(user.getUsername())) {
+			Usuario userSave = usuarioDao.findByUsername(user.getUsername());
+			userSave.setUltimaModificacion(new Date());
+			userSave.setEnabled(false);
+			usuarioDao.save(userSave);
+		} else {
+			//TO DO
+			//CONTROLAR CUANDO NO EXISTE EL USUARIO, NUEVO ERROR
+		}
+	}*/
 
 	
 	/**
@@ -84,7 +101,22 @@ public class JpaUserDetailsService implements UserDetailsService {
 	 * @return
 	 */
 	public boolean checkIfUserExist(String username) {
-		return usuarioDao.findByUsername(username) != null ? true : false;
+		return usuarioDao.existsByUsername(username);
+	}
+	
+	/**
+	 * Método para comprobar si el usuario se encuentra habilitado
+	 * @param username
+	 * @return
+	 */
+	public boolean checkIfUserEnable(String username) {
+		Usuario user = usuarioDao.findByUsername(username);
+		
+		if (user != null) {
+			return user.getEnabled();	
+		} 		
+		
+		return false;
 	}
 	
 	private void encodePassword(Usuario userEntity, Usuario user) {

@@ -1,6 +1,7 @@
 package com.gestdocu.models.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,6 +15,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import com.sun.istack.NotNull;
+
 @Entity
 @Table(name = "users")
 public class Usuario implements Serializable {
@@ -23,15 +29,27 @@ public class Usuario implements Serializable {
 	private Long id;
 
 	@Column(length = 30, unique = true)
+	@NotNull
 	private String username;
 
 	@Column(length = 60)
+	@NotNull
 	private String password;
 
-	private Boolean enabled;
+	// Por defecto siempre se habilitará a la hora de crearse
+	@NotNull
+	private Boolean enabled = true;
+	
+	@CreatedDate
+	@NotNull
+	private Date fechaCreacion = new Date();
+	
+	@LastModifiedDate
+	private Date ultimaModificacion;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
+	@NotNull
 	private List<Role> roles;
 
 	public Long getId() {
@@ -73,6 +91,24 @@ public class Usuario implements Serializable {
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
+	
+	public Date getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public Date getUltimaModificacion() {
+		return ultimaModificacion;
+	}
+
+	public void setUltimaModificacion(Date ultimaModificacion) {
+		this.ultimaModificacion = ultimaModificacion;
+	}
+
+
 
 	/**
 	 * 
