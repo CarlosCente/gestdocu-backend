@@ -3,6 +3,7 @@ package com.gestdocu.models.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,10 +112,24 @@ public class JpaUserDetailsService implements UserDetailsService {
 	 */
 	public boolean checkIfUserEnable(String username) {
 		Usuario user = usuarioDao.findByUsername(username);
-		
 		if (user != null) {
 			return user.getEnabled();	
 		} 		
+		return false;
+	}
+	
+	/**
+	 * TO DO, falta terminar de hacerlo
+	 * Método para comprobar si el usuario tiene rol de administrador
+	 * @param user
+	 * @return
+	 */
+	public boolean checkIfAdmin(Usuario user) {
+		if (checkIfUserExist(user.getUsername())) {
+			List<Role> roles = user.getRoles();   
+	        for (Role role : roles) {
+	        }     
+		}
 		
 		return false;
 	}

@@ -16,7 +16,7 @@ public class UserController {
 	@Autowired
     private JpaUserDetailsService userService;
 
-    @PostMapping(value = "/api/user/registro")
+    @PostMapping(value = "/api/user")
     public String register(@RequestBody Usuario newUser) {
 
 	    if(newUser.getUsername() != null && newUser.getPassword() != null) {
