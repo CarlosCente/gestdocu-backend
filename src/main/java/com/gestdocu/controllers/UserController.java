@@ -1,49 +1,29 @@
 package com.gestdocu.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gestdocu.auth.handler.UserAlreadyExistException;
-import com.gestdocu.models.entity.Usuario;
-import com.gestdocu.models.service.JpaUserDetailsService;
-
 @RestController
+@CrossOrigin(origins="*")
+@RequestMapping("/user")
 public class UserController {
-
-	@Autowired
-    private JpaUserDetailsService userService;
-
-    @PostMapping(value = "/api/user")
-    public String register(@RequestBody Usuario newUser) {
-
-	    if(newUser.getUsername() != null && newUser.getPassword() != null) {
-	    	try {
-				userService.register(newUser);
-			} catch (UserAlreadyExistException e) {
-				e.printStackTrace();
-				return "Ya existe un usuario con ese nombre";
-			}
-	    	return "TODO OK";
-	    } else {
-	    	return "No se han recibido correctamente los datos del usuario";
-	    }
-	    
-    }
-    
-    
-    /*@PutMapping(value = "/api/user/deshabilitar")
-    public String deshabilitarUsuario(@RequestBody Usuario usuario) {
-    	
-    	if (userService.checkIfUserExist(usuario.getUsername())) {
-    		userService.deshabilitarUsuario(usuario);
-    		return usuario.toString();
-    	} else {
-    		return "No existe el usuario";
-    	}
-    	
-    }*/
+	@GetMapping("/allusers")
+	public String displayUsers() {
+		return "Display All Users";
+	}
 	
+	@GetMapping("/displayuser")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+	public String displayToUser() {
+		return "Display to both user and admin";
+	}
+	
+	@GetMapping("/displayadmin")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public String displayToAdmin() {
+		return "Display only to admin";
+	}
 }
