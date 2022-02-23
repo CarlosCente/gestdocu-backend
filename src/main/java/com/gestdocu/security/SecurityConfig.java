@@ -31,6 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 									.passwordEncoder(passwordEncoder());
 	}
 	
+	
 	@Bean 
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -45,14 +46,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	public JwtTokenFilter jwtTokenFilter(){
 		return new JwtTokenFilter();
 	}
+	
+	
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		// We don't need CSRF for this example
 		httpSecurity.cors().and().csrf().disable()
 					.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
 					.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-					.authorizeRequests().antMatchers("/auth/**").permitAll()
-					.antMatchers(HttpMethod.GET, "/user/allusers").permitAll()
+					.authorizeRequests().antMatchers("/api/auth/**").permitAll()
+					.antMatchers(HttpMethod.GET, "/api/users").permitAll()
 					.anyRequest().authenticated();
 		
 		httpSecurity.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);					

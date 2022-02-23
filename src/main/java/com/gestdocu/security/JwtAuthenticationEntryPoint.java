@@ -20,4 +20,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		logger.error("Unauthorized access error : " + authException.getMessage());
 		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized Access");
 	}
+	
+	
 }

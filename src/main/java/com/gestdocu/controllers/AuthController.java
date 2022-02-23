@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gestdocu.dao.RoleRepository;
 import com.gestdocu.dao.UserRepository;
 import com.gestdocu.model.AuthResponse;
-import com.gestdocu.model.CustomUserBean;
 import com.gestdocu.model.Role;
 import com.gestdocu.model.Roles;
 import com.gestdocu.model.SignupRequest;
@@ -31,7 +30,7 @@ import com.gestdocu.security.JwtTokenUtil;
 
 @RestController
 @CrossOrigin(origins="http://localhost:4200") 
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 	@Autowired
 	UserRepository userRepository;
@@ -47,20 +46,29 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<?> userLogin(@Valid @RequestBody User user) {
 		System.out.println("AuthController -- userLogin");
-		Authentication authentication = authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
+		String username = user.getUserName();
+		String password = user.getPassword();
+		System.out.println("Username: " + username + ", password: " + password);
+		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 		
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String token = jwtTokenUtil.generateJwtToken(authentication);
-		CustomUserBean userBean = (CustomUserBean) authentication.getPrincipal();		
-		List<String> roles = userBean.getAuthorities().stream()
-									 .map(auth -> auth.getAuthority())
-									 .collect(Collectors.toList());
-		AuthResponse authResponse = new AuthResponse();
-		authResponse.setToken(token);
-		authResponse.setRoles(roles);
-		return ResponseEntity.ok(authResponse);
+		
+		return ResponseEntity.ok(null);
 	}
+	
+    @PostMapping("/signin")
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody User user) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                		user.getUserName(),
+                		user.getPassword()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = jwtTokenUtil.generateJwtToken(authentication);
+        return ResponseEntity.ok(new AuthResponse(jwt));
+    }
 	
 	@PostMapping("/signup")
 	public ResponseEntity<?> userSignup(@Valid @RequestBody SignupRequest signupRequest) {
