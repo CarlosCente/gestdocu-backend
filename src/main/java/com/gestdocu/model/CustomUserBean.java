@@ -33,6 +33,7 @@ public class CustomUserBean implements UserDetails {
 		return new CustomUserBean(user.getId(), user.getUserName(), 
 				user.getEmail(), user.getPassword(), authorities);
 	}
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return authorities;

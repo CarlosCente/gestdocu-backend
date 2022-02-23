@@ -1,5 +1,6 @@
 package com.gestdocu.controllers;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,19 +43,7 @@ public class AuthController {
 	AuthenticationManager authenticationManager;
 	@Autowired
 	JwtTokenUtil jwtTokenUtil;
-	
-	@PostMapping("/login")
-	public ResponseEntity<?> userLogin(@Valid @RequestBody User user) {
-		System.out.println("AuthController -- userLogin");
-		String username = user.getUserName();
-		String password = user.getPassword();
-		System.out.println("Username: " + username + ", password: " + password);
-		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 		
-		
-		return ResponseEntity.ok(null);
-	}
-	
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody User user) {
         Authentication authentication = authenticationManager.authenticate(
@@ -65,9 +54,18 @@ public class AuthController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
+      
+        //Se obtienen los roles del usuario para añadirlos a la respuesta 
+        //TO DO crear método que haga esto controlando varias cosas
+        User usuario = userRepository.findByUserName(user.getUserName()).get();
+        Set<Role> rolesUsuario = usuario.getRoles();
+        List<String> lRolesUsu = new ArrayList<String>();
+        for (Role role: rolesUsuario) {
+        	lRolesUsu.add(role.getRoleName().toString());
+        }
+        
         String jwt = jwtTokenUtil.generateJwtToken(authentication);
-        return ResponseEntity.ok(new AuthResponse(jwt));
+        return ResponseEntity.ok(new AuthResponse(jwt, lRolesUsu));
     }
 	
 	@PostMapping("/signup")
