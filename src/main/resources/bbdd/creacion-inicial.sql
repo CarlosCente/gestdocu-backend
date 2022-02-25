@@ -1,10 +1,15 @@
 CREATE DATABASE IF NOT EXISTS gestdocu;
 USE gestdocu;
 
-/* Creamos algunos usuarios con sus roles */
-INSERT INTO `users` (username, password, enabled) VALUES ('pruebas','$2a$10$O9wxmH/AeyZZzIS09Wp8YOEMvFnbRVJ8B4dmAMVSGloR62lj.yqXG',1);
-INSERT INTO `users` (username, password, enabled) VALUES ('admin','$2a$10$DOMDxjYyfZ/e7RcBfUpzqeaCs8pLgcizuiQWXPkU35nOhZlFcE9MS',1);
+--Roles para la propia empresa principal
+INSERT INTO `role` (name) VALUES ('ROLE_ADMIN');
+INSERT INTO `role` (name) VALUES ('ROLE_USER');
+--Roles para las empresas clientes
+INSERT INTO `role` (name) VALUES ('ROLE_SUB_ADMIN');
+INSERT INTO `role` (name) VALUES ('ROLE_SUB_USER');
 
-INSERT INTO `authorities` (user_id, authority) VALUES (1,'ROLE_USER');
-INSERT INTO `authorities` (user_id, authority) VALUES (2,'ROLE_ADMIN');
-INSERT INTO `authorities` (user_id, authority) VALUES (2,'ROLE_USER');
+--Usuario inicial de administracion (admin/admin) que tiene todos los permisos
+INSERT INTO `users` (email, password, name) VALUES (null,'$2a$10$U0Q9RYSCAdI9Xdz1dyUbn.PF9ANbwd9lHbTWZn427sYMuwjdwVPGG','admin')
+INSERT INTO user_role (user_id, role_id) VALUES (1,1);
+INSERT INTO user_role (user_id, role_id) VALUES (1,2);
+
