@@ -43,9 +43,8 @@ public class AuthController {
 	@Autowired
 	JwtTokenUtil jwtTokenUtil;
 		
-    @PostMapping("/signin")
+    @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody User user) {
-    	System.out.println("Entrando ne signin: " + user.getUsername() +" / " + user.getPassword());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                 		user.getUsername(),
@@ -59,6 +58,7 @@ public class AuthController {
         //TO DO crear método que haga esto controlando varias cosas
         User usuario = userRepository.findByUsername(user.getUsername()).get();
         Set<Role> rolesUsuario = usuario.getRoles();
+
         List<String> lRolesUsu = new ArrayList<String>();
         for (Role role: rolesUsuario) {
         	lRolesUsu.add(role.getRoleName().toString());
@@ -71,7 +71,7 @@ public class AuthController {
     /*
      * Este método posteriormente solo podra ser llamado por un usuario administrador que se ocupara de registrar usuarios relacionados con un cliente o empresa
      */
-	@PostMapping("/signup")
+	@PostMapping("/registro")
 	public ResponseEntity<?> userSignup(@Valid @RequestBody SignupRequest signupRequest) {
 		if(userRepository.existsByUsername(signupRequest.getUsername())){
 			return ResponseEntity.badRequest().body("Username is already taken");
@@ -98,6 +98,12 @@ public class AuthController {
 				case "user":
 					roles.add(roleRepository.findByRoleName(Roles.ROLE_USER).get());
 					break;	
+				case "sub_admin":
+					roles.add(roleRepository.findByRoleName(Roles.ROLE_SUB_ADMIN).get());
+					break;
+				case "sub_user":
+					roles.add(roleRepository.findByRoleName(Roles.ROLE_SUB_USER).get());
+					break;
 				default:
 					return ResponseEntity.badRequest().body("Specified role not found");
 			}
