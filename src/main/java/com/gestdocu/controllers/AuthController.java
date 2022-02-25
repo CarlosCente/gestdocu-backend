@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -68,6 +67,9 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(jwt, lRolesUsu));
     }
 	
+    /*
+     * Este método posteriormente solo podra ser llamado por un usuario administrador que se ocupara de registrar usuarios relacionados con un cliente o empresa
+     */
 	@PostMapping("/signup")
 	public ResponseEntity<?> userSignup(@Valid @RequestBody SignupRequest signupRequest) {
 		if(userRepository.existsByUserName(signupRequest.getUserName())){
