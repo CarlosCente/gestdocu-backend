@@ -30,7 +30,7 @@ public class UserController {
 	@GetMapping("/usuario/{username}")
 	public Optional<User> getUser(@PathVariable String username) {
 		System.out.println("UserController -- getUser");
-		return userRepository.findByUserName(username);
+		return userRepository.findByUsername(username);
 	}
 	
 }

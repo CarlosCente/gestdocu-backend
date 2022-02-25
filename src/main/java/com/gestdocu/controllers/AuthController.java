@@ -45,9 +45,10 @@ public class AuthController {
 		
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody User user) {
+    	System.out.println("Entrando ne signin: " + user.getUsername() +" / " + user.getPassword());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                		user.getUserName(),
+                		user.getUsername(),
                 		user.getPassword()
                 )
         );
@@ -56,7 +57,7 @@ public class AuthController {
       
         //Se obtienen los roles del usuario para añadirlos a la respuesta 
         //TO DO crear método que haga esto controlando varias cosas
-        User usuario = userRepository.findByUserName(user.getUserName()).get();
+        User usuario = userRepository.findByUsername(user.getUsername()).get();
         Set<Role> rolesUsuario = usuario.getRoles();
         List<String> lRolesUsu = new ArrayList<String>();
         for (Role role: rolesUsuario) {
@@ -72,7 +73,7 @@ public class AuthController {
      */
 	@PostMapping("/signup")
 	public ResponseEntity<?> userSignup(@Valid @RequestBody SignupRequest signupRequest) {
-		if(userRepository.existsByUserName(signupRequest.getUserName())){
+		if(userRepository.existsByUsername(signupRequest.getUsername())){
 			return ResponseEntity.badRequest().body("Username is already taken");
 		}
 		if(userRepository.existsByEmail(signupRequest.getEmail())){
@@ -80,7 +81,7 @@ public class AuthController {
 		}
 		User user = new User();
 		Set<Role> roles = new HashSet<>();
-		user.setUserName(signupRequest.getUserName());
+		user.setUsername(signupRequest.getUsername());
 		user.setEmail(signupRequest.getEmail());
 		user.setPassword(encoder.encode(signupRequest.getPassword()));
 		//System.out.println("Encoded password--- " + user.getPassword());

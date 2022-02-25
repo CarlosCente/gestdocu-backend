@@ -11,15 +11,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class CustomUserBean implements UserDetails {
 	private static final long serialVersionUID = -4709084843450077569L;	
 	private Integer id; 
-	private String userName; 
+	private String username; 
 	private String email;
 	@JsonIgnore
 	private String password;
 	private Collection<? extends GrantedAuthority> authorities;
-	CustomUserBean(Integer id, String userName, String email, 
+	CustomUserBean(Integer id, String username, String email, 
 			String password, Collection<? extends GrantedAuthority> authorities){
 		this.id = id;
-		this.userName = userName;
+		this.username = username;
 		this.email = email;
 		this.password = password;
 		this.authorities = authorities;
@@ -30,7 +30,7 @@ public class CustomUserBean implements UserDetails {
 												 .stream()
 												 .map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
 												 .collect(Collectors.toList());
-		return new CustomUserBean(user.getId(), user.getUserName(), 
+		return new CustomUserBean(user.getId(), user.getUsername(), 
 				user.getEmail(), user.getPassword(), authorities);
 	}
 	
@@ -46,7 +46,7 @@ public class CustomUserBean implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		return userName;
+		return username;
 	}
 
 	public Integer getId() {
@@ -80,7 +80,7 @@ public class CustomUserBean implements UserDetails {
 	@Override
 	public boolean equals(Object rhs) {
 		if (rhs instanceof CustomUserBean) {
-			return userName.equals(((CustomUserBean) rhs).userName);
+			return username.equals(((CustomUserBean) rhs).username);
 		}
 		return false;
 	}
@@ -90,6 +90,6 @@ public class CustomUserBean implements UserDetails {
 	 */
 	@Override
 	public int hashCode() {
-		return userName.hashCode();
+		return username.hashCode();
 	}
 }

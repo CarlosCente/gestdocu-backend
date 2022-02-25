@@ -9,8 +9,8 @@ import com.gestdocu.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer>{
-	public Optional<User> findByUserName(String userName);
+	public Optional<User> findByUsername(String username);
 	public boolean existsByEmail(String email);
-	public boolean existsByUserName(String userName);
+	public boolean existsByUsername(String username);
 	public List<User> findAll();
 }
